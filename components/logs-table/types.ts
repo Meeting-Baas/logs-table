@@ -69,6 +69,29 @@ export type Screenshot = {
   date: string
 }
 
+export type SystemMetrics = {
+  timestamp: string
+  system: {
+    cpuUsage: number
+    memoryUsed: number
+    memoryTotal: number
+    memoryPercent: number
+  }
+  processes: {
+    ffmpeg: Array<{
+      name: string
+      pid: number
+      cpu: number
+      memory: number
+    }>
+    chrome: {
+      count: number
+      cpu: number
+      memory: number
+    }
+  }
+}
+
 export type BotSearchParams = {
   bot_uuid: string
   offset: number

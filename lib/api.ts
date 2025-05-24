@@ -1,8 +1,9 @@
 import type {
   BotPaginated,
   BotQueryParams,
-  Screenshot,
   BotSearchParams,
+  Screenshot,
+  SystemMetrics,
   UserReportedError
 } from "@/components/logs-table/types"
 
@@ -99,6 +100,60 @@ export async function fetchScreenshots(
 
 interface LogsUrlResponse {
   url: string
+}
+
+export async function fetchSystemMetrics(
+  bot_uuid: string
+): Promise<{ metrics: SystemMetrics[]; logsUrl: string }> {
+  // Input validation
+  if (!bot_uuid || typeof bot_uuid !== 'string' || bot_uuid.trim().length === 0) {
+    throw new Error('bot_uuid is required and must be a non-empty string')
+  }
+
+  // Fetch the system metrics logs url
+  const response = await fetch(`/api/bots/${bot_uuid}/machine_logs`)
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch system metrics url: ${response.status} ${response.statusText}`)
+  }
+
+  const responseJson = await response.json()
+  
+  // Runtime validation of response structure
+  if (!responseJson || typeof responseJson !== 'object') {
+    throw new Error('Invalid response format: expected an object')
+  }
+  
+  if (!responseJson.url || typeof responseJson.url !== 'string') {
+    throw new Error('Invalid response format: missing or invalid url property')
+  }
+
+  const logsUrlResponse = responseJson as LogsUrlResponse
+  
+  // Fetch the actual logs file
+  const logsResponse = await fetch(logsUrlResponse.url)
+  if (!logsResponse.ok) {
+    throw new Error(`Failed to fetch system metrics logs: ${logsResponse.status} ${logsResponse.statusText}`)
+  }
+
+  const logsText = await logsResponse.text()
+  
+  // Parse the logs into SystemMetrics array
+  const metrics: SystemMetrics[] = []
+  const lines = logsText.trim().split('\n')
+  
+  for (const line of lines) {
+    if (line.trim()) {
+      try {
+        const parsed = JSON.parse(line) as SystemMetrics
+        metrics.push(parsed)
+      } catch (error) {
+        console.warn('Failed to parse log line:', line, error)
+      }
+    }
+  }
+
+  return { metrics, logsUrl: logsUrlResponse.url }
 }
 
 export async function fetchDebugLogs(bot_uuid: string): Promise<{ text: string; logsUrl: string }> {

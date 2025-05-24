@@ -6,6 +6,12 @@ if (!process.env.API_SERVER_BASEURL) {
   )
 }
 
+if (!process.env.IMAGE_HOST) {
+  throw new Error(
+    "IMAGE_HOST is not defined in the environment variables. Please set it in your .env file."
+  )
+}
+
 const nextConfig: NextConfig = {
   async rewrites() {
     const apiServerBaseUrl = process.env.API_SERVER_BASEURL
@@ -19,7 +25,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: "s3.eu-west-3.amazonaws.com",
+        hostname: process.env.IMAGE_HOST,
         protocol: "https"
       }
     ]

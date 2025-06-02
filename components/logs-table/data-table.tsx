@@ -113,8 +113,11 @@ export function DataTable<TData extends FormattedBotData, TValue>({
               <Loader2 className="size-4 animate-spin text-primary" aria-label="Refreshing logs" />
             )}
           </div>
-          <div className="flex w-full items-center gap-2 md:w-1/2 lg:w-1/3 xl:w-1/4">
-            <DataTableFilter globalFilter={globalFilter} onGlobalFilterChange={setGlobalFilter} />
+          <div className="flex w-full items-start gap-2 md:w-1/2 lg:w-1/3 xl:w-1/4">
+            <div className="flex w-full flex-col items-start gap-2">
+              <DataTableFilter globalFilter={globalFilter} onGlobalFilterChange={setGlobalFilter} />
+              <BotSearch />
+            </div>
             <ExportCsvDialog
               table={table}
               dateRange={dateRange}
@@ -123,9 +126,6 @@ export function DataTable<TData extends FormattedBotData, TValue>({
             />
             <ColumnVisibilityDropdown table={table} />
           </div>
-        </div>
-        <div className="mt-2 flex">
-          <BotSearch />
         </div>
       </div>
       <div className="mb-2 flex flex-col justify-between gap-2 md:flex-row">

@@ -153,13 +153,12 @@ export function TableDialogsProvider({ children }: { children: React.ReactNode }
         isMeetingBaasUser={reportedErrorDialogState.isMeetingBaasUser}
       />
 
-      {debugDialogState.isMeetingBaasUser && (
-        <DebugDialog
-          row={debugDialogState.row}
-          open={debugDialogState.open}
-          onOpenChange={handleDebugDialogChange}
-        />
-      )}
+      <DebugDialog
+        row={debugDialogState.row}
+        open={debugDialogState.open}
+        onOpenChange={handleDebugDialogChange}
+        isMeetingBaasUser={debugDialogState.isMeetingBaasUser}
+      />
     </TableDialogsContext.Provider>
   )
 }

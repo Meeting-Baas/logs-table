@@ -3,6 +3,8 @@ import { fetchLogs } from "@/lib/api"
 import type { FilterState, FormattedBotData } from "@/components/logs-table/types"
 import { getPlatformFromUrl } from "@/lib/format-logs"
 import dayjs from "dayjs"
+import { usePostMessage } from "./use-post-message"
+import { useMemo } from "react"
 
 interface UseLogsParams {
   offset: number
@@ -19,8 +21,16 @@ export function useLogs({
   startDate,
   endDate,
   filters,
-  botUuids
+  botUuids: initialBotUuids
 }: UseLogsParams) {
+  const { botUuids: postMessageBotUuids } = usePostMessage()
+
+  // Use bot UUIDs from postMessage if available, otherwise use initial bot UUIDs
+  const botUuids = useMemo(
+    () => (postMessageBotUuids.length > 0 ? postMessageBotUuids : initialBotUuids),
+    [postMessageBotUuids, initialBotUuids]
+  )
+
   const { data, isLoading, isError, error, isRefetching } = useQuery({
     queryKey: [
       "logs",

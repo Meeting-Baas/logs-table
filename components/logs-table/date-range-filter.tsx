@@ -28,6 +28,29 @@ export function DateRangeFilter({ value, onChange }: DateRangeFilterProps) {
         displayFormat="DD MMM YYYY"
         separator=" - "
         onChange={handleDateChange}
+        configs={{
+          shortcuts: {
+            today: "Today",
+            yesterday: "Yesterday",
+            past2Days: {
+              text: "Last 2 days",
+              period: {
+                start: dayjs().subtract(2, "day").toDate(),
+                end: dayjs().toDate()
+              }
+            },
+            past3Days: {
+              text: "Last 3 days",
+              period: {
+                start: dayjs().subtract(3, "day").toDate(),
+                end: dayjs().toDate()
+              }
+            },
+            past: (period) => `Last ${period} days`,
+            currentMonth: "This month",
+            pastMonth: "Last month"
+          }
+        }}
         showShortcuts
         useRange
         readOnly

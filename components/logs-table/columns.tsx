@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils"
 import type { JSX } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { isMeetingBaasUser } from "@/lib/utils"
+import { EmailTooltip } from "@/components/logs-table/email-tooltip"
 
 export const createColumns = (email?: string): ColumnDef<FormattedBotData>[] => [
   {
@@ -85,6 +86,16 @@ export const createColumns = (email?: string): ColumnDef<FormattedBotData>[] => 
     accessorKey: "params.bot_name",
     meta: { displayName: "Bot Name" },
     header: ({ column }) => <SortableHeader column={column} title="Bot Name" />,
+    cell: ({ row }) => {
+      const botName = row.original.params.bot_name || ""
+      if (!botName) return <span className="text-muted-foreground text-xs">N/A</span>
+      const truncated = botName.length > 30 ? `${botName.slice(0, 27)}...` : botName
+      return (
+        <CopyTooltip text={botName} copyText="Copy bot name">
+          {truncated}
+        </CopyTooltip>
+      )
+    },
     sortingFn: "alphanumeric"
   },
   {
@@ -137,11 +148,12 @@ export const createColumns = (email?: string): ColumnDef<FormattedBotData>[] => 
             return <SortableHeader column={column} title="Email" />
           },
           cell: ({ row }) => {
-            if (!row.original.account_email) return "-"
+            if (!row.original.account_email)
+              return <span className="text-muted-foreground text-xs">N/A</span>
             return (
-              <CopyTooltip text={row.original.account_email} copyText="Copy email">
+              <EmailTooltip email={row.original.account_email} botUuid={row.original.uuid}>
                 {row.original.account_email}
-              </CopyTooltip>
+              </EmailTooltip>
             )
           }
         }

@@ -118,13 +118,11 @@ export function TableActions({ row, containerClassName }: TableActionsProps) {
   return (
     <>
       <div className={cn("flex w-full justify-between gap-2", containerClassName)}>
-        {meetingBaasUser && (
-          <IconButton
-            icon={<Logs className={iconClasses} />}
-            tooltip="Debug bot logs"
-            onClick={handleDebugDialog}
-          />
-        )}
+        <IconButton
+          icon={<Logs className={iconClasses} />}
+          tooltip="Debug bot logs"
+          onClick={handleDebugDialog}
+        />
         <IconButton
           icon={<RotateCcw className={iconClasses} />}
           tooltip="Resend Final Webhook"
